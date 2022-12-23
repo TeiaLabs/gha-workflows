@@ -28,7 +28,7 @@ on:
         default: true
         type: boolean
       mypy:
-        description: Whether to run black.
+        description: Whether to run mypy.
         required: false
         default: true
         type: boolean
