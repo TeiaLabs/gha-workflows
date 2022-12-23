@@ -1,0 +1,58 @@
+name: Reusable Security Check Workflow
+on:
+  workflow_call:
+    inputs:
+      deps-directory:
+        description: What folder to search for requirements.
+        required: false
+        default: "."
+        type: string
+      source-directory:
+        description: Directory containing the source code.
+        required: true
+        type: string
+      module-directory:
+        description: Directory containing a specific module source code.
+        required: false
+        default: .
+        type: string
+
+    outputs:
+      bandit_report_path:
+        description: "Bandit Report Path"
+        value: ${{ jobs.Bandit.outputs.report_path }}
+
+jobs:
+  Bandit:
+    runs-on: ubuntu-latest
+    outputs:
+      report_path: bandit-results/bandit.xml
+    steps:
+      - name: Load Cache & Dependencies
+        uses: TeiaLabs/python-dependencies-action@master
+        with:
+          deps-directory: ${{ inputs.deps-directory }}
+          security: true
+
+      - name: Verify with Bandit
+        run: bandit -r ${{ inputs.module-directory }} -f json -o bandit.json
+        working-directory: ${{ inputs.source-directory }}
+
+      - name: Upload Bandit results
+        uses: actions/upload-artifact@v3
+        with:
+          name: bandit-results
+          path: ${{ inputs.source-directory }}/bandit.json
+
+  Dependency-Review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Review Dependencies
+        uses: actions/dependency-review-action@v3
+        with:
+          license-check: false
+          config-file: "./.github/dependency-review-config.yml"
