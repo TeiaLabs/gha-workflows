@@ -76,7 +76,7 @@ on:
 jobs:
   Security:
     if: inputs.enable-security
-    uses: cristovamsilva/gha-workflows/.github/workflows/reusable-security.yml@main
+    uses: TeiaLabs/gha-workflows/.github/workflows/reusable-security.yml@main
     with:
       dependencies-directory: ${{ inputs.dependencies-directory }}
       source-directory: ${{ inputs.source-directory }}
@@ -86,7 +86,7 @@ jobs:
 
   Quality:
     if: inputs.enable-quality
-    uses: cristovamsilva/gha-workflows/.github/workflows/reusable-qa.yml@main
+    uses: TeiaLabs/gha-workflows/.github/workflows/reusable-qa.yml@main
     with:
       dependencies-directory: ${{ inputs.dependencies-directory }}
       source-directory: ${{ inputs.source-directory }}
@@ -100,7 +100,7 @@ jobs:
   SonarCloud:
     needs: [Quality, Security, Test]
     if: inputs.enable-sonar
-    uses: cristovamsilva/gha-workflows/.github/workflows/reusable-sonar.yml@main
+    uses: TeiaLabs/gha-workflows/.github/workflows/reusable-sonar.yml@main
     with:
       exec-report: ${{ needs.Test.outputs.execution-report }}
       cov-report: ${{ needs.Test.outputs.coverage-report }}
