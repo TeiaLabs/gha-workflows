@@ -26,7 +26,7 @@ jobs:
   Bandit:
     runs-on: ubuntu-latest
     outputs:
-      report_path: bandit-results/bandit.xml
+      report_path: bandit-results/bandit.json
     steps:
       - name: Load Cache & Dependencies
         uses: TeiaLabs/python-dependencies-action@master

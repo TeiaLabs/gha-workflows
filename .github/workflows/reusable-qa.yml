@@ -5,11 +5,12 @@ on:
       dependencies-directory:
         description: What folder to search for requirements.
         required: false
-        default: "."
+        default: .
         type: string
       source-directory:
         description: Directory containing the source code.
-        required: true
+        required: false
+        default: .
         type: string
       module-directory:
         description: Directory containing a specific module source code.
@@ -20,34 +21,34 @@ on:
       sort:
         description: Whether to run isort.
         required: false
-        default: true
+        default: false
         type: boolean
       format:
         description: Whether to run black.
         required: false
-        default: true
+        default: false
         type: boolean
       mypy:
         description: Whether to run mypy.
         required: false
-        default: true
+        default: false
         type: boolean
       flake8:
         description: Whether to run flake8.
         required: false
-        default: true
+        default: false
         type: boolean
       pylint:
         description: Whether to run pylint.
         required: false
-        default: true
+        default: false
         type: boolean
 
     outputs:
-      flake8_report_path:
+      flake8_report:
         description: "Flake8 Report Path"
         value: ${{ jobs.Flake8.outputs.report_path }}
-      pylint_report_path:
+      pylint_report:
         description: "Pylint Report Path"
         value: ${{ jobs.Pylint.outputs.report_path }}
 
@@ -102,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     if: inputs.pylint
     outputs:
-      report_path: pyliynt-results/pyliynt.xml
+      report_path: pyliynt-results/pylint.json
     steps:
       - name: Load Cache & Dependencies
         uses: TeiaLabs/python-dependencies-action@master
