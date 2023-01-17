@@ -2,7 +2,7 @@ name: Reusable Quality Assurance Workflow
 on:
   workflow_call:
     inputs:
-      deps-directory:
+      dependencies-directory:
         description: What folder to search for requirements.
         required: false
         default: "."
@@ -59,7 +59,7 @@ jobs:
       - name: Load Cache & Dependencies
         uses: TeiaLabs/python-dependencies-action@master
         with:
-          deps-directory: ${{ inputs.deps-directory }}
+          dependencies-directory: ${{ inputs.dependencies-directory }}
           application: true
           quality: true
 
@@ -76,7 +76,7 @@ jobs:
       - name: Load Cache & Dependencies
         uses: TeiaLabs/python-dependencies-action@master
         with:
-          deps-directory: ${{ inputs.deps-directory }}
+          dependencies-directory: ${{ inputs.dependencies-directory }}
           quality: true
 
       - name: Format using Black
@@ -91,7 +91,7 @@ jobs:
       - name: Load Cache & Dependencies
         uses: TeiaLabs/python-dependencies-action@master
         with:
-          deps-directory: ${{ inputs.deps-directory }}
+          dependencies-directory: ${{ inputs.dependencies-directory }}
           quality: true
 
       - name: Format using MyPy
@@ -107,7 +107,7 @@ jobs:
       - name: Load Cache & Dependencies
         uses: TeiaLabs/python-dependencies-action@master
         with:
-          deps-directory: ${{ inputs.deps-directory }}
+          dependencies-directory: ${{ inputs.dependencies-directory }}
           quality: true
 
       - name: Lint with PyLint
@@ -129,7 +129,7 @@ jobs:
       - name: Load Cache & Dependencies
         uses: TeiaLabs/python-dependencies-action@master
         with:
-          deps-directory: ${{ inputs.deps-directory }}
+          dependencies-directory: ${{ inputs.dependencies-directory }}
           quality: true
 
       - name: Lint with Flake8
