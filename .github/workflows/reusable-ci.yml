@@ -14,21 +14,43 @@ on:
         default: src
         type: string
 
+      tests-directory:
+        description: Directory containing the test code.
+        required: false
+        default: tests
+        type: string
+
       module-directory:
         description: Directory containing a specific module source code.
         required: false
         default: "."
         type: string
 
+      enable-test:
+        description: Whether to run tests.
+        required: false
+        default: false
+        type: boolean
+      test-ignore-erros:
+        description: Whether to run tests.
+        required: false
+        default: false
+        type: boolean
+      test-extra-arguments:
+        description: Extra arguments to pass to pytest command.
+        required: false
+        default: ""
+        type: string
+
       enable-security:
         description: Whether to run security checks.
         required: false
-        default: true
+        default: false
         type: boolean
       security-bandit:
         description: Whether to run bandit checks.
         required: false
-        default: true
+        default: false
         type: boolean
       security-deps-review:
         description: Whether to run dependency checks.
@@ -39,41 +61,54 @@ on:
       enable-quality:
         description: Whether to run quality assurance checks.
         required: false
-        default: true
+        default: false
         type: boolean
+
       quality-sort:
         description: Whether to run isort.
         required: false
-        default: true
+        default: false
         type: boolean
       quality-format:
         description: Whether to run black.
         required: false
-        default: true
+        default: false
         type: boolean
       quality-mypy:
         description: Whether to run black.
         required: false
-        default: true
+        default: false
         type: boolean
       quality-flake8:
         description: Whether to run flake8.
         required: false
-        default: true
+        default: false
         type: boolean
       quality-pylint:
         description: Whether to run pylint.
         required: false
-        default: true
+        default: false
         type: boolean
 
       enable-sonar:
         description: Whether to export to sonarcloud.
         required: false
-        default: true
+        default: false
         type: boolean
 
 jobs:
+  Test:
+    if: inputs.enable-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test with Pytest
+        uses: TeiaLabs/pytest-action@main
+        with:
+          dependencies-directory: ${{ inputs.dependencies-directory }}
+          tests-directory: ${{ inputs.tests-directory }}
+          module-directory: ${{ inputs.module-directory }}
+          ignore-errors: ${{ inputs.test-ignore-errors }}
+
   Security:
     if: inputs.enable-security
     uses: TeiaLabs/gha-workflows/.github/workflows/reusable-security.yml@main
@@ -102,8 +137,8 @@ jobs:
     if: inputs.enable-sonar
     uses: TeiaLabs/gha-workflows/.github/workflows/reusable-sonar.yml@main
     with:
-      exec-report: ${{ needs.Test.outputs.execution-report }}
-      cov-report: ${{ needs.Test.outputs.coverage-report }}
+      execution-report: ${{ needs.Test.outputs.execution-report }}
+      coverage-report: ${{ needs.Test.outputs.coverage-report }}
       bandit-report: ${{ needs.Security.outputs.security-report }}
       pylint-report: ${{ needs.Quality.outputs.pylint_report }}
       flake-report: ${{ needs.QUality.outputs.flake8_report }}

@@ -61,7 +61,6 @@ jobs:
         uses: TeiaLabs/python-dependencies-action@master
         with:
           dependencies-directory: ${{ inputs.dependencies-directory }}
-          application: true
           quality: true
 
       - name: Sort imports using isort
@@ -99,7 +98,7 @@ jobs:
         run: mypy ${{ inputs.module-directory }}
         working-directory: ${{ inputs.source-directory }}
 
-  Pylint:
+  PyLint:
     runs-on: ubuntu-latest
     if: inputs.pylint
     outputs:
@@ -134,7 +133,9 @@ jobs:
           quality: true
 
       - name: Lint with Flake8
-        run: flake8 ${{ inputs.module-directory }} --count --exit-zero --select=E9,F63,F7,F82 --show-source --statistics --output-file=flake8.txt
+        run: |
+          flake8 ${{ inputs.module-directory }} --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 ${{ inputs.module-directory }} --count --exit-zero --max-complexity=10 --statistics --output-file=flake8.txt
         working-directory: ${{ inputs.source-directory }}
 
       - name: Upload Flake8 results

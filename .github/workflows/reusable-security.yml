@@ -14,11 +14,22 @@ on:
       module-directory:
         description: Directory containing a specific module source code.
         required: false
-        default: .
+        default: "."
         type: string
 
+      bandit:
+        description: Whether to run bandit.
+        required: false
+        default: true
+        type: boolean
+      deps-review:
+        description: Whether to run bandit.
+        required: false
+        default: true
+        type: boolean
+
     outputs:
-      bandit_report_path:
+      security-report:
         description: "Bandit Report Path"
         value: ${{ jobs.Bandit.outputs.report_path }}
 
@@ -46,7 +57,7 @@ jobs:
 
   Dependency-Review:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: inputs.deps-review && github.event_name == 'pull_request'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
