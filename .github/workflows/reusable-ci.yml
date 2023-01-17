@@ -14,32 +14,10 @@ on:
         default: src
         type: string
 
-      tests-directory:
-        description: Directory containing the test code.
-        required: false
-        default: tests
-        type: string
-
       module-directory:
         description: Directory containing a specific module source code.
         required: false
         default: "."
-        type: string
-
-      enable-test:
-        description: Whether to run tests.
-        required: false
-        default: false
-        type: boolean
-      test-ignore-erros:
-        description: Whether to run tests.
-        required: false
-        default: false
-        type: boolean
-      test-extra-arguments:
-        description: Extra arguments to pass to pytest command.
-        required: false
-        default: ""
         type: string
 
       enable-security:
@@ -63,7 +41,6 @@ on:
         required: false
         default: false
         type: boolean
-
       quality-sort:
         description: Whether to run isort.
         required: false
@@ -95,20 +72,18 @@ on:
         required: false
         default: false
         type: boolean
+      execution-report:
+        description: Where to retrieve pytest execution results.
+        required: false
+        default: pytest-exec-results/xunit-result.xml
+        type: string
+      coverage-report:
+        description: Where to retrieve pytest coverage results.
+        required: false
+        default: pytest-cov-results/coverage.xml
+        type: string
 
 jobs:
-  Test:
-    if: inputs.enable-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Test with Pytest
-        uses: TeiaLabs/pytest-action@main
-        with:
-          dependencies-directory: ${{ inputs.dependencies-directory }}
-          tests-directory: ${{ inputs.tests-directory }}
-          module-directory: ${{ inputs.module-directory }}
-          ignore-errors: ${{ inputs.test-ignore-errors }}
-
   Security:
     if: inputs.enable-security
     uses: TeiaLabs/gha-workflows/.github/workflows/reusable-security.yml@main
@@ -133,12 +108,12 @@ jobs:
       pylint: ${{ inputs.quality-pylint }}
 
   SonarCloud:
-    needs: [Quality, Security, Test]
+    needs: [Quality, Security]
     if: inputs.enable-sonar
     uses: TeiaLabs/gha-workflows/.github/workflows/reusable-sonar.yml@main
     with:
-      execution-report: ${{ needs.Test.outputs.execution-report }}
-      coverage-report: ${{ needs.Test.outputs.coverage-report }}
+      execution-report: ${{ inputs.execution-report }}
+      coverage-report: ${{ inputs.coverage-report }}
       bandit-report: ${{ needs.Security.outputs.security-report }}
       pylint-report: ${{ needs.Quality.outputs.pylint_report }}
       flake-report: ${{ needs.QUality.outputs.flake8_report }}
