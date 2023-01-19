@@ -86,7 +86,7 @@ on:
 jobs:
   Security:
     if: inputs.enable-security
-    uses: TeiaLabs/gha-workflows/.github/workflows/reusable-security.yml@main
+    uses: TeiaLabs/gha-workflows/.github/workflows/reusable-security.yml@master
     with:
       dependencies-directory: ${{ inputs.dependencies-directory }}
       source-directory: ${{ inputs.source-directory }}
@@ -96,7 +96,7 @@ jobs:
 
   Quality:
     if: inputs.enable-quality
-    uses: TeiaLabs/gha-workflows/.github/workflows/reusable-qa.yml@main
+    uses: TeiaLabs/gha-workflows/.github/workflows/reusable-qa.yml@master
     with:
       dependencies-directory: ${{ inputs.dependencies-directory }}
       source-directory: ${{ inputs.source-directory }}
@@ -110,7 +110,7 @@ jobs:
   SonarCloud:
     needs: [Quality, Security]
     if: inputs.enable-sonar
-    uses: TeiaLabs/gha-workflows/.github/workflows/reusable-sonar.yml@main
+    uses: TeiaLabs/gha-workflows/.github/workflows/reusable-sonar.yml@master
     with:
       execution-report: ${{ inputs.execution-report }}
       coverage-report: ${{ inputs.coverage-report }}
